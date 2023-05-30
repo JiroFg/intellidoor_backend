@@ -1,5 +1,6 @@
-import { pool } from "../db/db.js";
+import { connection, pool } from "../db/db.js";
 import verifyAuth from "../helpers/verify-auth.js";
+import mqtt from "mqtt";
 
 const getInuseclassrooms = async (req, res) => {
   try {
@@ -51,8 +52,9 @@ const postInuseclassrooms = async (req, res) => {
       `INSERT INTO inuseclassrooms VALUES (null, ?, ?, ?)`,
       [crId, userId, time]
     );
-    //TODO abrir el chunche
-    
+    //abrir el chunche 
+    openDoor(crId)
+    console.log("se abrio la puerta")
     //finalmente devuelve un estatus 200 si todo salio bien
     res.status(200).send(rows);
   } catch (error) {
@@ -62,6 +64,24 @@ const postInuseclassrooms = async (req, res) => {
     });
   }
 };
+
+//función para mandar mensaje al broker de la puerta que se desea abrir
+function openDoor(message){
+  const client = mqtt.connect("mqtt://localhost:1883");
+
+  client.on("connect", function () {
+    client.subscribe("Classrooms", function (err) {
+      if (!err) {
+        client.publish("Classrooms", message.toString());
+      }
+    });
+  });
+
+  client.on("message", function (topic, message) {
+    console.log(message.toString());
+    client.end();
+  });
+}
 
 const patchInuseclassrooms = async (req, res) => {
   try {
