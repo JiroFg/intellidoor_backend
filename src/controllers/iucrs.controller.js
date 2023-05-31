@@ -1,4 +1,4 @@
-import { connection, pool } from "../db/db.js";
+import { pool } from "../db/db.js";
 import verifyAuth from "../helpers/verify-auth.js";
 import mqtt from "mqtt";
 
@@ -54,7 +54,6 @@ const postInuseclassrooms = async (req, res) => {
     );
     //abrir el chunche 
     openDoor(crId)
-    console.log("se abrio la puerta")
     //finalmente devuelve un estatus 200 si todo salio bien
     res.status(200).send(rows);
   } catch (error) {
@@ -67,12 +66,32 @@ const postInuseclassrooms = async (req, res) => {
 
 //función para mandar mensaje al broker de la puerta que se desea abrir
 function openDoor(message){
-  const client = mqtt.connect("mqtt://localhost:1883");
+  const client = mqtt.connect("mqtt://test.mosquitto.org");
 
   client.on("connect", function () {
-    client.subscribe("Classrooms", function (err) {
+    client.subscribe("TecoUV/Intellidoor/Classrooms", function (err) {
       if (!err) {
-        client.publish("Classrooms", message.toString());
+        client.publish("TecoUV/Intellidoor/Classrooms", message.toString()+" 1");
+        console.log("se abrio la puerta")
+      }
+    });
+  });
+
+  client.on("message", function (topic, message) {
+    console.log(message.toString());
+    client.end();
+  });
+}
+
+//función para mandar mensaje al broker de la puerta que se desea cerrar
+function closeDoor(message){
+  const client = mqtt.connect("mqtt://test.mosquitto.org");
+
+  client.on("connect", function () {
+    client.subscribe("TecoUV/Intellidoor/Classrooms", function (err) {
+      if (!err) {
+        client.publish("TecoUV/Intellidoor/Classrooms", message.toString()+" 0");
+        console.log("se cerror la puerta")
       }
     });
   });
@@ -121,6 +140,7 @@ const deleteInuseclassrooms = async (req, res) => {
     //si no se afecto ninguna tupla se devuelve un error 404
     if(result.affectedRows <= 0) return res.status(404).json({message: "User not found"});
     //si se realizo correctamente la inserción devuelve un estatus 200
+    closeDoor(req.params.id)
     res.status(200).send(result);
   } catch (error) {
     //si se cacha algun error se devuelve un estatus 500
