@@ -1,12 +1,11 @@
 import { Router } from 'express'
-import { deleteInuseclassrooms, getInuseclassrooms, patchInuseclassrooms, postInuseclassrooms, getInuseclassroom } from '../controllers/iucrs.controller.js'
+import { deleteInuseclassrooms, getInuseclassrooms, postInuseclassrooms, getInuseclassroomByUserId } from '../controllers/iucrs.controller.js'
 
 const iucrsRouter = Router()
 
-iucrsRouter.get('', getInuseclassrooms)
-iucrsRouter.get('/:id', getInuseclassroom)
-iucrsRouter.post('', postInuseclassrooms)
-iucrsRouter.patch('/:id', patchInuseclassrooms)
-iucrsRouter.delete('/:id', deleteInuseclassrooms)
+iucrsRouter.get('', getInuseclassrooms)//OK
+iucrsRouter.get('/:userId', getInuseclassroomByUserId)//OK
+iucrsRouter.post('', postInuseclassrooms)//OK
+iucrsRouter.delete('/:id', deleteInuseclassrooms)//OK
 
 export default iucrsRouter

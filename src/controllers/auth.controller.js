@@ -7,12 +7,14 @@ const postAuth = async (req, res) =>{
   const { email, password } = req.body
   const exists = await pool.query(`SELECT * FROM users WHERE email = ? AND password = ?`, [email, password])
   if(exists[0].length === 0) return res.sendStatus(401)
+  const [user] = exists[0]
+  const admin = user.admin
   const token = jwt.sign({
     email,
-    password,
-    exp: Date.now() + (60*1000*60)
+    admin,
+    exp: Date.now() + (60*1000*60*2)
   }, KEY)
-  res.send({token})
+  res.send([{token},{"admin":admin}])
   }catch(error){
     return res.sendStatus(401)
   }

@@ -1,6 +1,5 @@
 import { pool } from "../db/db.js";
 import verifyAuth from "../helpers/verify-auth.js";
-import mqtt from "mqtt";
 
 const getInuseclassrooms = async (req, res) => {
   try {
@@ -14,13 +13,13 @@ const getInuseclassrooms = async (req, res) => {
   }
 };
 
-const getInuseclassroom = async (req, res) => {
+const getInuseclassroomByUserId = async (req, res) => {
   try {
     //comprueba el header con el token de authorización
     verifyAuth(req.headers.authorization);
     const [rows] = await pool.query(
-      `SELECT * FROM inuseclassrooms WHERE id = ?`,
-      [req.params.id]
+      `SELECT * FROM inuseclassrooms WHERE userId = ?`,
+      [req.params.userId]
     );
     if (rows.length <= 0)
       return res.status(400).json({ message: "Classroom is not in use" });
@@ -64,70 +63,6 @@ const postInuseclassrooms = async (req, res) => {
   }
 };
 
-//función para mandar mensaje al broker de la puerta que se desea abrir
-function openDoor(message){
-  const client = mqtt.connect("mqtt://test.mosquitto.org");
-
-  client.on("connect", function () {
-    client.subscribe("TecoUV/Intellidoor/Classrooms", function (err) {
-      if (!err) {
-        client.publish("TecoUV/Intellidoor/Classrooms", message.toString()+" 1");
-        console.log("se abrio la puerta")
-      }
-    });
-  });
-
-  client.on("message", function (topic, message) {
-    console.log(message.toString());
-    client.end();
-  });
-}
-
-//función para mandar mensaje al broker de la puerta que se desea cerrar
-function closeDoor(message){
-  const client = mqtt.connect("mqtt://test.mosquitto.org");
-
-  client.on("connect", function () {
-    client.subscribe("TecoUV/Intellidoor/Classrooms", function (err) {
-      if (!err) {
-        client.publish("TecoUV/Intellidoor/Classrooms", message.toString()+" 0");
-        console.log("se cerror la puerta")
-      }
-    });
-  });
-
-  client.on("message", function (topic, message) {
-    console.log(message.toString());
-    client.end();
-  });
-}
-
-const patchInuseclassrooms = async (req, res) => {
-  try {
-    //comprueba el header con el token de autorización
-    verifyAuth(req.headers.authorization);
-    //se obtiene el ide de los parametros
-    const { id } = req.params;
-    //se obtienen los valores del body
-    const { crId, userId, time } = req.body;
-    //se realiza la actualización, si algun atributo no es mandado se deja el que ya esta en la tupla
-    const [result] = await pool.query(
-      `UPDATE inuseclassrooms SET crId = IFNULL(?, crId), userId = IFNULL(?, userId), time = IFNULL(?, time) WHERE id = ?`,
-      [crId, userId, time, id]
-    );
-    //si no se afecto ninguna tupla se devuelve un estatus 404
-    if (result.affectedRows == 0)
-      return res.status(404).json({ message: "Classroom is not in use" });
-    //si se realizo con exito devuelve un estatus 200
-    res.status(200).send(result);
-  } catch (error) {
-    //si se cacha algun error devuelve un estatus 500
-    return res.status(500).json({
-      message: "Something goes wrong",
-    });
-  }
-};
-
 const deleteInuseclassrooms = async (req, res) => {
   try {
     //comprueba el header con el token de autorización
@@ -152,8 +87,7 @@ const deleteInuseclassrooms = async (req, res) => {
 
 export {
   getInuseclassrooms,
-  getInuseclassroom,
+  getInuseclassroomByUserId,
   postInuseclassrooms,
-  patchInuseclassrooms,
   deleteInuseclassrooms,
 };

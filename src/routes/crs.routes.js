@@ -3,10 +3,10 @@ import { deleteClassrooms, getClassroom, getClassrooms, patchClassrooms, postCla
 
 const crsRouter = Router()
 
-crsRouter.get('', getClassrooms)
+crsRouter.get('', getClassrooms)//OK
 crsRouter.get('/:id', getClassroom)
-crsRouter.post('', postClassrooms)
-crsRouter.patch('/:id', patchClassrooms)
-crsRouter.delete('/:id', deleteClassrooms)
+crsRouter.post('', postClassrooms)//OK
+crsRouter.patch('/:id', patchClassrooms)//OK
+crsRouter.delete('/:id', deleteClassrooms)//OK
 
 export default crsRouter
