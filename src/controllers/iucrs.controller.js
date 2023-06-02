@@ -40,8 +40,8 @@ const postInuseclassrooms = async (req, res) => {
     const { crId, userId, time } = req.body;
     //se comprueba que no exista ya un elemento con ese ID de classroom
     const exists = await pool.query(
-      `SELECT * FROM inuseclassrooms WHERE crId = ?`,
-      [crId]
+      `SELECT * FROM inuseclassrooms WHERE crId = ? AND time = ?`,
+      [crId, time]
     );
     //si se encuentra algun elemento devuelve un error 409
     if (exists[0].length > 0)
