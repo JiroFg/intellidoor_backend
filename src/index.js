@@ -6,11 +6,13 @@ import authRouter from "./routes/auth.routes.js";
 import { PORT } from "./config/config.js";
 import doorRouter from "./routes/door.routes.js";
 import cors from "cors";
+import rootRouter from "./routes/root.routes.js";
 
 const app = express();
 
 app.use(cors())
 app.use(express.json());
+app.use("/", rootRouter)
 app.use("/users", usersRouter);
 app.use("/classrooms", crsRouter);
 app.use("/inuseclassrooms", iucrsRouter);
