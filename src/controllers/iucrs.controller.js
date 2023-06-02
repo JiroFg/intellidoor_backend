@@ -39,13 +39,13 @@ const postInuseclassrooms = async (req, res) => {
     //se toman los valores del body
     const { crId, userId, time } = req.body;
     //se comprueba que no exista ya un elemento con ese ID de classroom
-    console.log( crId+userId+time)
     const exists = await pool.query(
       `SELECT * FROM inuseclassrooms WHERE crId = ? AND time = ?`,
       [crId, time]
     );
     //si se encuentra algun elemento devuelve un error 409
-    console.log(exists)
+    console.log(exists[0])
+    console.log(exists[0].length)
     if (exists[0].length > 0)
       return res.status(409).json({ message: "Classroom in use" });
     //si no se encuentra procede a hacer la inserción
