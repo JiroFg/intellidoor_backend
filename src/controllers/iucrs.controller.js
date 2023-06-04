@@ -44,19 +44,21 @@ const postInuseclassrooms = async (req, res) => {
       [crId, time]
     );
     //si se encuentra algun elemento devuelve un error 409
-    console.log(exists[0])
-    console.log(exists[0].length)
-    if (exists[0].length > 0)
+    console.log(exists[0]);
+    console.log(exists[0].length);
+    if (exists[0].length > 0) {
       return res.status(409).json({ message: "Classroom in use" });
-    //si no se encuentra procede a hacer la inserción
-    const [rows] = await pool.query(
-      `INSERT INTO inuseclassrooms VALUES (null, ?, ?, ?)`,
-      [crId, userId, time]
-    );
-    //abrir el chunche 
-    openDoor(crId)
-    //finalmente devuelve un estatus 200 si todo salio bien
-    res.status(200).send(rows);
+    } else {
+      //si no se encuentra procede a hacer la inserción
+      const [rows] = await pool.query(
+        `INSERT INTO inuseclassrooms VALUES (null, ?, ?, ?)`,
+        [crId, userId, time]
+      );
+      //abrir el chunche
+      openDoor(crId);
+      //finalmente devuelve un estatus 200 si todo salio bien
+      return res.status(200).send(rows);
+    }
   } catch (error) {
     //si se cacha algun error devuelve el estatus 500
     return res.status(500).json({
@@ -75,9 +77,10 @@ const deleteInuseclassrooms = async (req, res) => {
       [req.params.id]
     );
     //si no se afecto ninguna tupla se devuelve un error 404
-    if(result.affectedRows <= 0) return res.status(404).json({message: "User not found"});
+    if (result.affectedRows <= 0)
+      return res.status(404).json({ message: "User not found" });
     //si se realizo correctamente la inserción devuelve un estatus 200
-    closeDoor(req.params.id)
+    closeDoor(req.params.id);
     res.status(200).send(result);
   } catch (error) {
     //si se cacha algun error se devuelve un estatus 500
