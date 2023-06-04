@@ -46,9 +46,9 @@ const postInuseclassrooms = async (req, res) => {
     //si se encuentra algun elemento devuelve un error 409
     console.log(exists[0]);
     console.log(exists[0].length);
-    if (exists[0].length > 0) {
-      return res.status(200).json({ message: "Classroom in use" });
-    } else {
+    // if (exists[0].length > 0) {
+    //   return res.status(200).json({ message: "Classroom in use" });
+    // } else {
       //si no se encuentra procede a hacer la inserción
       const [rows] = await pool.query(
         `INSERT INTO inuseclassrooms VALUES (null, ?, ?, ?)`,
@@ -58,7 +58,7 @@ const postInuseclassrooms = async (req, res) => {
       openDoor(crId);
       //finalmente devuelve un estatus 200 si todo salio bien
       return res.status(200).send(rows);
-    }
+    //}
   } catch (error) {
     //si se cacha algun error devuelve el estatus 500
     return res.status(500).json({
