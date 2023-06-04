@@ -54,8 +54,6 @@ const postInuseclassrooms = async (req, res) => {
         `INSERT INTO inuseclassrooms VALUES (null, ?, ?, ?)`,
         [crId, userId, time]
       );
-      //abrir el chunche
-      openDoor(crId);
       //finalmente devuelve un estatus 200 si todo salio bien
       return res.status(200).send(rows);
     //}
