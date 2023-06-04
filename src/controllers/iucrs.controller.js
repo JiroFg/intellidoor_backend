@@ -3,10 +3,14 @@ import verifyAuth from "../helpers/verify-auth.js";
 
 const getInuseclassrooms = async (req, res) => {
   try {
+    //se verifica el token del cliente
     verifyAuth(req.headers.authorization);
+    //si el token es valido procede a realizar la consulta
     const [rows] = await pool.query(`SELECT * FROM inuseclassrooms`);
+    //responde al cliente con las tuplas resultantes
     res.status(200).send(rows);
   } catch (error) {
+    //si algun error es cachado devuelve el estatus 500
     return res.status(500).json({
       message: "Something goes wrong",
     });
@@ -17,12 +21,16 @@ const getInuseclassroomByUserId = async (req, res) => {
   try {
     //comprueba el header con el token de authorización
     verifyAuth(req.headers.authorization);
+    //si el token es valido procede a hacer la consulta
     const [rows] = await pool.query(
       `SELECT * FROM inuseclassrooms WHERE userId = ?`,
       [req.params.userId]
     );
+    //si no se encontro en la base de datos sabemos que no tiene reservas
     if (rows.length <= 0)
-      return res.status(400).json({ message: "Classroom is not in use" });
+    //devuelve un error 400 y el mensaje que no tiene reservaciones
+      return res.status(400).json({ message: "Don't have any reservation" });
+    //si se encontraron devuelve las tuplas resultantes
     res.status(200).send(rows);
   } catch (error) {
     //Si se cacha un error devuelve un estatus 500

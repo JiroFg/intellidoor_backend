@@ -22,5 +22,3 @@ CREATE TABLE inuseclassrooms(
   FOREIGN KEY (crId) REFERENCES classrooms(id),
   FOREIGN KEY (userId) REFERENCES users(id)
 );
-
-INSERT INTO users (null, 'admin', 'admin@uv.mx', 'UVadmin125',1);

@@ -1,6 +1,6 @@
 import { KEY } from "../config/config.js";
 import jwt from "jsonwebtoken";
-
+//esta función recibe el token y verifica que este bien estructurado, posteriormente utiliza la función verify para verificar si este token fue creado por este servicio web o es falso
 const verifyAuth = (token) => {
   if(!token) throw new Error();
   const parts = token.split('.')
