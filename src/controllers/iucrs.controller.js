@@ -23,7 +23,7 @@ const getInuseclassroomByUserId = async (req, res) => {
     );
     if (rows.length <= 0)
       return res.status(400).json({ message: "Classroom is not in use" });
-    res.status(200).send(rows[0]);
+    res.status(200).send(rows);
   } catch (error) {
     //Si se cacha un error devuelve un estatus 500
     return res.status(500).json({
