@@ -55,7 +55,7 @@ const postInuseclassrooms = async (req, res) => {
     console.log(exists[0]);
     console.log(exists[0].length);
     if (exists[0].length > 0) {
-      return res.status(200).json({ message: "Classroom in use" });
+      return res.status(409).json({ message: "Classroom in use" });
     } else {
       //si no se encuentra procede a hacer la inserción
       const [rows] = await pool.query(
@@ -84,9 +84,8 @@ const deleteInuseclassrooms = async (req, res) => {
     );
     //si no se afecto ninguna tupla se devuelve un error 404
     if (result.affectedRows <= 0)
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Reservation not found" });
     //si se realizo correctamente la inserción devuelve un estatus 200
-    closeDoor(req.params.id);
     res.status(200).send(result);
   } catch (error) {
     //si se cacha algun error se devuelve un estatus 500

@@ -18,6 +18,8 @@ const openDoor = async (req, res) => {
             req.params.id + " 1"
           );
           console.log("se abrio la puerta");
+        }else{
+          console.log(err)
         }
       });
     });
@@ -50,6 +52,8 @@ const closeDoor = async (req, res) => {
             req.params.id + " 0"
           );
           console.log("se cerror la puerta");
+        }else{
+          console.log(err)
         }
       });
     });
